@@ -64,7 +64,7 @@ Touch points found by inspecting the tree:
 5. **`port-hash`** — records the upstream Java commit the .NET port came from. Leave untouched;
    reference it from the origin marker (§8).
 
-## 3. Work item: producer line and copyright  [OPEN - commits 7/8]
+## 3. Work item: producer line and copyright  [DONE - commits 7/8]
 
 1. **`AbstractITextProductEventProcessor.cs:46`** — swap the company and drop the usage-type
    suffix. From:
@@ -116,11 +116,42 @@ Touch points found by inspecting the tree:
    part in it. Total exposure for commit 7 is therefore these 4 files plus the 3
    direct-assertion files in §3.3 — not the whole suite.
 
-5. **[VERIFY]** Dropping `(T 'version')` may affect tests that assert the *format* rather than
-   the company — check `UsedProductsPlaceholderPopulator` and `ProducerBuilder` tests under
-   `itext.tests/itext.commons.tests/itext/commons/actions/producer/`.
+5. **[VERIFIED]** No `UsedProductsPlaceholderPopulator` / `ProducerBuilder` test asserts the
+   default template, so dropping `(T 'version')` did not touch them —
+   `itext.commons.tests` stayed at 0 failed / 419 passed throughout.
 
-6. **`AssemblyCompany` / `AssemblyCopyright`** in the 33 `AssemblyInfo.cs` files → KOMSA GmbH.
+6. **[FOUND DURING IMPLEMENTATION - not in the original plan]** The template is *not* the only
+   hardcoded producer. Two further sites had to change, both discovered because
+   `FlushPdfDocumentEventTest` kept passing after the template change when it should not have:
+
+   - `itext/itext.kernel/itext/kernel/actions/events/FlushPdfDocumentEvent.cs:69` — the
+     "no events" fallback producer, used whenever a document has no registered events (any
+     reader-only document takes this path). Has no usage-type suffix, so only the company
+     changed.
+   - `itext/itext.kernel/itext/kernel/pdf/xobject/ImagePdfBytesInfo.cs:40` — the TIFF
+     `Software` tag stamped onto extracted TIFF images.
+
+   Both now say `KOMSA GmbH`. Had these been missed, roughly half the producer surface would
+   have stayed `Apryse Group NV`.
+
+7. **`(AGPL version)` in existing `cmp_` files — resolved by normalisation, not regeneration.**
+   Stripping the suffix from output left 7 `CompareDocumentInfo` tests failing, because their
+   reference PDFs still carry it (5 kernel, 2 pdfa). Two options were on the table: regenerate
+   the 7 reference PDFs, or teach `ConvertProducerLine` to drop the suffix the way it already
+   drops version and copyright drift. **Option B was chosen** — no binary churn, reversible:
+
+   ```csharp
+   private const String AGPL_USAGE_TYPE_REGEXP = " \(AGPL[- ]version\)";
+   private const String AGPL_USAGE_TYPE_REPLACEMENT = "";
+   ```
+
+   applied as a third `ReplaceAll` in `ConvertProducerLine`. It matches both layouts found in
+   reference files (`(AGPL version)` after the version, `(AGPL-version)` trailing the company in
+   older 5.x files). `(licensed to ...)` is deliberately **not** stripped, so `VersionReplaceTest`
+   still passes. Cost: `CompareTool` no longer reports AGPL-vs-licensed usage-type differences,
+   and `CompareToolTest.DifferentProducerTest` needed its expected message updated.
+
+8. **`AssemblyCompany` / `AssemblyCopyright`** in the 33 `AssemblyInfo.cs` files → KOMSA GmbH.
    Handled centrally by §6 rather than by editing 33 files.
 
 ## 4. Work item: drop net461  [DONE]
@@ -404,8 +435,9 @@ instead of two.
 - [x] All 9 package ids correct — `Komsa.itext.font-asian` verified (the assembly inside is
       still `itext.font_asian.dll`, as before)
 - [x] No `.snk` left in the tree; `itext.kernel.dll` reports `PublicKeyToken=null`
-- [ ] A produced PDF's `/Producer` reads `iText® Core 9.8.0.1 ©2000-2026 KOMSA GmbH` — no
-      `(AGPL version)` suffix *(commit 7)*
+- [x] A produced PDF's `/Producer` reads `iText® Core 9.8.0.1 ©2000-2026 KOMSA GmbH` — no
+      `(AGPL version)` suffix. Confirmed by writing a PDF and reading it back; the pre-change
+      value was `iText® Core 9.8.0.1 (AGPL version) ©2000-2026 Apryse Group NV`
 - [x] Assembly metadata shows `9.0.0.0` / `9.8.0.1` / `9.8.0.1`, `KOMSA GmbH`, and the three
       `Komsa: …` origin `AssemblyMetadata` entries
 

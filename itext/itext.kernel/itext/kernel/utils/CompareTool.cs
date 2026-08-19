@@ -83,6 +83,10 @@ namespace iText.Kernel.Utils {
 
         private const String COPYRIGHT_REPLACEMENT = "\u00a9<copyright years> Apryse Group NV";
 
+        private const String AGPL_USAGE_TYPE_REGEXP = " \\(AGPL[- ]version\\)";
+
+        private const String AGPL_USAGE_TYPE_REPLACEMENT = "";
+
         private static readonly bool MEMORY_FIRST_WRITER_DISABLED;
 
         private const String NEW_LINES = "[\\r\\n]";
@@ -1722,8 +1726,11 @@ namespace iText.Kernel.Utils {
 
 //\cond DO_NOT_DOCUMENT
         internal virtual String ConvertProducerLine(String producer) {
-            return iText.Commons.Utils.StringUtil.ReplaceAll(iText.Commons.Utils.StringUtil.ReplaceAll(producer, VERSION_REGEXP
-                , VERSION_REPLACEMENT), COPYRIGHT_REGEXP, COPYRIGHT_REPLACEMENT);
+            // The AGPL usage type is dropped as well, so that reference files produced before the
+            // producer line stopped printing it stay comparable.
+            return iText.Commons.Utils.StringUtil.ReplaceAll(iText.Commons.Utils.StringUtil.ReplaceAll(iText.Commons.Utils.StringUtil
+                .ReplaceAll(producer, VERSION_REGEXP, VERSION_REPLACEMENT), COPYRIGHT_REGEXP, COPYRIGHT_REPLACEMENT),
+                AGPL_USAGE_TYPE_REGEXP, AGPL_USAGE_TYPE_REPLACEMENT);
         }
 //\endcond
 

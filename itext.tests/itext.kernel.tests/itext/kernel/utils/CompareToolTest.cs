@@ -152,7 +152,7 @@ namespace iText.Kernel.Utils {
 
         [NUnit.Framework.Test]
         public virtual void DifferentProducerTest() {
-            String expectedMessage = "Document info fail. Expected: \"iText\u00ae <version> \u00a9<copyright years> Apryse Group NV (iText Software; licensed version)\", actual: \"iText\u00ae <version> \u00a9<copyright years> Apryse Group NV (AGPL-version)\"";
+            String expectedMessage = "Document info fail. Expected: \"iText\u00ae <version> \u00a9<copyright years> Apryse Group NV (iText Software; licensed version)\", actual: \"iText\u00ae <version> \u00a9<copyright years> Apryse Group NV\"";
             String licensed = sourceFolder + "producerLicensed.pdf";
             String agpl = sourceFolder + "producerAGPL.pdf";
             NUnit.Framework.Assert.AreEqual(expectedMessage, new CompareTool().CompareDocumentInfo(agpl, licensed));
