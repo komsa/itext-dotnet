@@ -25,6 +25,19 @@
         <Authors>KOMSA GmbH</Authors>
         <Copyright>Copyright (c) 1998-2026 KOMSA GmbH</Copyright>
 
+        <!-- NuGet packaging (module packages; the 11 bundled projects opt out) -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageProjectUrl>https://itextpdf.com/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/komsa/itext-dotnet</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageIcon>ITSC-avatar.png</PackageIcon>
+        <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageOutputPath>$(MSBuildThisFileDirectory)..\artifacts\nuget</PackageOutputPath>
+        <IncludeSymbols>false</IncludeSymbols>
+        <!-- ship the portable PDB next to the DLL instead of a separate symbols package -->
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+
         <!-- Output -->
         <OutputType>library</OutputType>
 
@@ -42,5 +55,11 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(IsPackable)' != 'false' ">
+        <None Include="$(MSBuildThisFileDirectory)..\ITSC-avatar.png" Pack="true" PackagePath="" Visible="false" />
+        <None Include="$(MSBuildThisFileDirectory)..\gnu-agpl-v3.0.md" Pack="true" PackagePath="" Visible="false" />
+        <None Include="$(MSBuildThisFileDirectory)..\LICENSE.md" Pack="true" PackagePath="" Visible="false" />
     </ItemGroup>
 </Project>

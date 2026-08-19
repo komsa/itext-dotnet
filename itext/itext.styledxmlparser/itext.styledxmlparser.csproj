@@ -2,6 +2,8 @@
   <!-- The .csrpoj file uses ../Directory.Build.props as a source for some configurations -->
   <PropertyGroup>
     <AssemblyName>itext.styledxmlparser</AssemblyName>
+    <!-- Shipped inside the Komsa.itext bundle package (itext.nuspec), not on its own. -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\itext.io\itext.io.csproj" />

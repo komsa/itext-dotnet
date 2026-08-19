@@ -2,6 +2,11 @@
   <!-- The .csrpoj file uses ../Directory.Build.props as a source for some configurations -->
   <PropertyGroup>
     <AssemblyName>itext.hyph</AssemblyName>
+    <!-- NuGet package metadata (replaces the former hand-written .nuspec) -->
+    <PackageId>Komsa.itext.hyph</PackageId>
+    <Title>iText Hyph</Title>
+    <Description>XML files that can be used for hyphenation with iText, an open source PDF library</Description>
+    <PackageTags>itext itext7 itextsharp c# .net csharp pdf hyphenation hyph</PackageTags>
     <!-- RootNamespace property from ../Directory.Build.props is overriden -->
     <RootNamespace>iText.Hyph</RootNamespace>
   </PropertyGroup>

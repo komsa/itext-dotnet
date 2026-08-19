@@ -22,6 +22,9 @@
         <Authors>KOMSA GmbH</Authors>
         <Copyright>Copyright (c) 1998-2026 KOMSA GmbH</Copyright>
 
+        <!-- Never produce NuGet packages from test projects -->
+        <IsPackable>false</IsPackable>
+
         <!-- Output -->
         <OutputType>library</OutputType>
 

@@ -2,6 +2,12 @@
   <!-- The .csrpoj file uses ../Directory.Build.props as a source for some configurations -->
   <PropertyGroup>
     <AssemblyName>itext.io</AssemblyName>
+    <!-- Shipped inside the Komsa.itext bundle package (itext.nuspec), not on its own. -->
+    <IsPackable>false</IsPackable>
+    <!-- Carries the bundle package id so module packages that reference a bundled
+         assembly get a dependency on Komsa.itext. Only one project can do this:
+         NuGet restore rejects two projects sharing a PackageId. -->
+    <PackageId>Komsa.itext</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
