@@ -502,6 +502,24 @@ are pure string-splitting tests and keep running. Measured on `itext.commons.tes
 Measured effect on `itext.io.tests`: unfiltered **34 failed / 989 passed / 1025 total**;
 filtered **0 failed / 965 passed / 967 total**. All 34 failures were Ghostscript/ImageMagick.
 
+### Baseline run (before commit 7)
+
+`dotnet test iTextCore.sln -c Release --settings komsa.runsettings`, 13 test assemblies,
+~44 min: **17590 passed, 8 failed, 36 skipped**. All 8 failures were environmental, none
+related to commits 1-6:
+
+| Assembly | Failures |
+|---|---|
+| `itext.commons.tests` | 2 - `SystemUtilTest.RunProcessAnd*` (null ImageMagick path) |
+| `itext.kernel.tests` | 6 - all `CompareToolTest`: `CompareToolErrorReportTest01`-`04`, `BaseFontAbsenceInOutPdfTest`, `DumpMemoryFirstWriterOnDiskTest` |
+
+The 6 kernel failures are the "known limitation" below in action: these tests deliberately
+compare mismatching PDFs, so `CompareByContent` reaches the Ghostscript fallback every time by
+design. All 8 are now excluded by the filter.
+
+Note `itext.brotli-compressor.tests` is **not in `iTextCore.sln`**, so a solution-wide run never
+covers it (see also §14.1).
+
 **Known limitation the filter cannot remove.** `CompareTool.CompareByContent` falls back to
 `CompareVisuallyAndCombineReports` (`CompareTool.cs:2062`) whenever it finds a difference, which
 invokes Ghostscript and throws `GS_ENVIRONMENT_VARIABLE_IS_NOT_SPECIFIED`. Passing content
