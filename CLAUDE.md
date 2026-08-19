@@ -125,6 +125,12 @@ Packing the bundle needs `nuget.exe` at `D:\Git\TeamFoundation\Binaries\Stable\n
 - **Strong naming is removed.** No `.snk`, `InternalsVisibleTo` without `PublicKey=`. A
   strong-named consumer cannot reference these assemblies.
 
+## Deliberately left as upstream has it
+
+- **`Komsa.itext.pdftest` depends on `NUnit 3.7.1`** while the test projects use `3.14.0`. This
+  skew is upstream's; it only became visible because the old hand-written nuspec declared no
+  dependencies at all. Decided to leave it — don't "align" it.
+
 ## Branding invariants
 
 Produced PDFs must read:
