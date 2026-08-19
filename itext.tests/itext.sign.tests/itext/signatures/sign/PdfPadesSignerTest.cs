@@ -277,7 +277,7 @@ namespace iText.Signatures.Sign {
                     ProductData productData = ITextCoreProductData.GetInstance();
                     String newlyAddedProducer = "iText\u00ae " + productData.GetPublicProductName() + " " +
                         productData.GetVersion() + " \u00a9" + productData.GetSinceCopyrightYear() + "-"
-                        + productData.GetToCopyrightYear() + " Apryse Group NV";
+                        + productData.GetToCopyrightYear() + " KOMSA GmbH";
                     String actualProducerLine = signedPdf.GetDocumentInfo().GetProducer();
                     String regularProducerLine = regularPdf.GetDocumentInfo().GetProducer();
 

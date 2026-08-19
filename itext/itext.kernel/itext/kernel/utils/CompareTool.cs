@@ -79,7 +79,7 @@ namespace iText.Kernel.Utils {
 
         private const String VERSION_REPLACEMENT = "<version>";
 
-        private const String COPYRIGHT_REGEXP = "\u00a9\\d+-\\d+ (?:iText Group NV|Apryse Group NV)";
+        private const String COPYRIGHT_REGEXP = "\u00a9\\d+-\\d+ (?:iText Group NV|Apryse Group NV|KOMSA GmbH)";
 
         private const String COPYRIGHT_REPLACEMENT = "\u00a9<copyright years> Apryse Group NV";
 

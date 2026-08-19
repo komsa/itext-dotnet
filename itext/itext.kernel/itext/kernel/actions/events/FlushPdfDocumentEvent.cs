@@ -66,7 +66,7 @@ namespace iText.Kernel.Actions.Events {
             if (events == null || events.IsEmpty()) {
                 ProductData productData = ITextCoreProductData.GetInstance();
                 String noEventProducer = "iText\u00ae " + productData.GetPublicProductName() + " " + productData.GetVersion
-                    () + " \u00a9" + productData.GetSinceCopyrightYear() + "-" + productData.GetToCopyrightYear() + " Apryse Group NV";
+                    () + " \u00a9" + productData.GetSinceCopyrightYear() + "-" + productData.GetToCopyrightYear() + " KOMSA GmbH";
                 newProducer = ProducerBuilder.MergeProducerLines(oldProducer, noEventProducer);
             }
             else {
