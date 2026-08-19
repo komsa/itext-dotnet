@@ -5,4 +5,9 @@
         <DocumentationFile>$(TargetDir)\$(AssemblyName).xml</DocumentationFile>
 
     </PropertyGroup>
+
+    <!-- KOMSA origin marker, linked into every assembly built from this folder -->
+    <ItemGroup>
+        <Compile Include="$(MSBuildThisFileDirectory)KomsaSharedAssemblyInfo.cs" Link="Properties\KomsaSharedAssemblyInfo.cs" />
+    </ItemGroup>
 </Project>

@@ -18,8 +18,16 @@
         <!-- Compiler -->
         <WarningLevel>0</WarningLevel>
 
+        <!-- Debug symbols / SourceLink -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <DebugType>portable</DebugType>
+
         <!-- Warnings -->
         <NoWarn>1701;1702;1591;1570;1572;1573;1574;1580;1584;1658</NoWarn>
         
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    </ItemGroup>
 </Project>
