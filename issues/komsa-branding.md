@@ -1,7 +1,10 @@
 # KOMSA branding for `itext-dotnet`
 
-Status: **decided, ready to implement.** Remaining unknowns are marked **[VERIFY]** — they are
-things to measure during implementation, not decisions to make.
+Status: **commits 1–6 implemented** on `Feature/Branding`; commits 7 and 8 (§3, the producer
+line and any `cmp_` regeneration) are still open. Sections carry a **[DONE]** marker where they
+have landed, and the resolved **[VERIFY]** items have been replaced by **[VERIFIED]** findings.
+
+Implementation notes and deviations from the original plan are collected in §14.
 
 Goal: give the `Komsa/develop` fork of `itext-dotnet` the same kind of KOMSA branding and
 in-house packaging that `komsa/itextsharp` (branch `Komsa/develop`) already has.
@@ -61,7 +64,7 @@ Touch points found by inspecting the tree:
 5. **`port-hash`** — records the upstream Java commit the .NET port came from. Leave untouched;
    reference it from the origin marker (§8).
 
-## 3. Work item: producer line and copyright
+## 3. Work item: producer line and copyright  [OPEN - commits 7/8]
 
 1. **`AbstractITextProductEventProcessor.cs:46`** — swap the company and drop the usage-type
    suffix. From:
@@ -111,7 +114,7 @@ Touch points found by inspecting the tree:
 6. **`AssemblyCompany` / `AssemblyCopyright`** in the 33 `AssemblyInfo.cs` files → KOMSA GmbH.
    Handled centrally by §6 rather than by editing 33 files.
 
-## 4. Work item: drop net461
+## 4. Work item: drop net461  [DONE]
 
 Libraries target `netstandard2.0` only; tests target `net10.0` only. `netstandard2.0` is
 consumable from net10, so this is a pure removal — no retarget.
@@ -136,21 +139,29 @@ consumable from net10, so this is a pure removal — no retarget.
    `CommonsRuntime.cs:541,722`) become permanently dead code — leave them, removal is a
    separate cleanup and would enlarge the diff against upstream.
 6. `itext/itext.bouncy-castle-fips-adapter` already targets `netstandard2.0` only — no change.
-7. **[VERIFY]** `iTextCore.sln` may carry per-TFM build configurations; check it still builds.
+7. **[VERIFIED]** `iTextCore.sln` carries no TFM-specific configuration — it contains no
+   `net461`/`netcoreapp`/`netstandard` string at all — and builds clean afterwards.
+   Two projects are *not* in the solution: `itext.brotli-compressor` and
+   `itext.brotli-compressor.tests`. They keep their own `TargetFrameworks`
+   (`netstandard2.1;net8.0` and `net8.0;net10.0`) and had to gain an empty
+   `<TargetFramework></TargetFramework>`, otherwise the single `TargetFramework` inherited
+   from `Directory.Build.props` would have silently turned them into single-target builds.
 
-## 5. Work item: strong naming removal
+## 5. Work item: strong naming removal  [DONE]
 
 1. `SignAssembly=false` (or drop the property) in `itext/Directory.Build.props` and
    `itext.tests/Directory.Build.props`; remove `AssemblyOriginatorKeyFile` / `DelaySign`.
 2. Delete the **33 `itext.snk` copies** (one per project folder, `itext/` and `itext.tests/`).
 3. Strip `,PublicKey=…` from the **20 `InternalsVisibleTo`** declarations under `itext/`
    (leaving the bare assembly name), and check `itext.tests/` for any further ones.
-4. **[VERIFY]** Grep for leftover `.snk` / `PublicKey` references in
-   `itext/itext.pdftest/itext.pdftest.props` and any `.csproj`.
+4. **[VERIFIED]** No leftovers. `itext.pdftest.props` only contains verapdf `Content`
+   entries; after the change there is no `.snk` file in the tree and no `PublicKey=` in any
+   `.cs`/`.csproj`/`.props`/`.targets`/`.nuspec`. `itext.kernel.dll` reports
+   `PublicKeyToken=null`.
 5. Consumer note: unsigned assemblies cannot be referenced by strong-named projects. Any
    internal consumer that is itself strong-named will break. Worth a heads-up before release.
 
-## 6. Work item: central versioning
+## 6. Work item: central versioning  [DONE]
 
 Target values:
 
@@ -180,12 +191,14 @@ Also bump the version constants that are **not** assembly attributes and must be
 `CommonsProductData.COMMONS_VERSION` and `ITextCoreProductData.CORE_VERSION`
 (`9.8.0-SNAPSHOT` → `9.8.0.1`).
 
-**[VERIFY]** `CompareTool.VERSION_REGEXP` is `"(\\d+\\.)+\\d+(-SNAPSHOT)?"`, which matches
-`9.8.0.1` fine — but confirm nothing else parses the version as three-part.
+**[VERIFIED]** `CompareTool.VERSION_REGEXP` (`"(\\d+\\.)+\\d+(-SNAPSHOT)?"`) matches `9.8.0.1`.
+Nothing else parses the product version: `ProductData.GetVersion()` returns the raw string
+and `UsedProductsPlaceholderPopulator` only substitutes it. The only other version constant,
+`MINIMAL_COMPATIBLE_LICENSEKEY_VERSION = "4.1.0"`, is unrelated and unchanged.
 
-## 7. Work item: packaging
+## 7. Work item: packaging  [DONE]
 
-### 7a. Bundle — `Komsa.itext` (keep `itext.nuspec`)
+### 7a. Bundle — `Komsa.itext` (keep `itext.nuspec`)  [DONE]
 
 Edit in place:
 - `<id>` → `Komsa.itext`
@@ -198,8 +211,10 @@ Edit in place:
 - `<files>` → **delete the 22 `lib\net461` entries**, keep the 22 `netstandard2.0` ones
 - keep `<icon>ITSC-avatar.png</icon>`, `<licenseUrl>` (AGPL), `<projectUrl>`, and the
   `NOTICE_*.txt` / `LICENSE.md` / `gnu-agpl-v3.0.md` entries
-- **[VERIFY]** `<releaseNotes>` still points at `itextpdf.com/itext7release` — decide whether to
-  drop it
+- **[OPEN DECISION]** `<releaseNotes>https://itextpdf.com/itext7release</releaseNotes>` was
+  **kept** (the least-change option, consistent with keeping `<projectUrl>` and
+  `<licenseUrl>`). It points at upstream release notes, which are misleading for a KOMSA
+  build — drop it if that bothers you.
 
 Pack with the confirmed local tool:
 
@@ -209,7 +224,7 @@ D:\Git\TeamFoundation\Binaries\Stable\nuget.exe pack itext.nuspec -OutputDirecto
 
 after a `dotnet build -c Release`, since the nuspec globs pre-built output.
 
-### 7b. Modules — `GeneratePackageOnBuild`
+### 7b. Modules — `GeneratePackageOnBuild`  [DONE]
 
 Delete these 8 nuspecs and move their metadata into the corresponding `.csproj`:
 
@@ -234,11 +249,29 @@ Set `IsPackable=false` for the 11 projects that go into the bundle and for all o
 Shared package metadata (`Authors`, `Copyright`, `PackageProjectUrl`, `RepositoryUrl`,
 `RepositoryType`, `PackageIcon`, `PackageLicense*`) goes in `itext/Directory.Build.props`.
 
-**[VERIFY]** Each module nuspec's `<dependencies>` must be reproduced by the csproj's real
-`PackageReference`/`ProjectReference` set. Diff the generated `.nuspec` inside each produced
-`.nupkg` against the old file before publishing.
+**[VERIFIED]** The generated nuspecs were diffed against the old hand-written ones. Parity
+holds, with these fixes:
 
-### 7c. Push script
+- `itext.commons`, `itext.bouncy-castle-adapter`, `itext.font-asian`, `itext.hyph` matched
+  out of the box.
+- `itext.bouncy-castle-fips-adapter`: the `bc-fips-1.0.2.dll` / `bcpkix-fips-1.0.2.dll`
+  assemblies are plain `<Reference>`s, so `dotnet pack` ignored them. They are now packed
+  explicitly into `lib\netstandard2.0`, together with `NOTICE.txt`.
+- `itext.pdftest`: the old nuspec declared **no** dependencies at all even though the
+  project references NUnit, BouncyCastle and several `System.*` packages. The generated
+  package now declares them — an improvement, not a regression. Its `Build\` payload
+  (`itext.pdftest.props` + the two verapdf files) is packed explicitly. **The props file is
+  packed as `build\Komsa.itext.pdftest.props`**: NuGet only auto-imports a build props file
+  named after the package id, so keeping `itext.pdftest.props` would have silently stopped
+  the verapdf wiring from being imported.
+- Bundle dependency (`itext.brotli-compressor`, `itext.webp-image-support`,
+  `itext.pdftest`): see §14 — a `ProjectReference` to an `IsPackable=false` project still
+  becomes a package dependency, using that project's `PackageId`.
+- Portable PDBs are packed next to each DLL via
+  `AllowedOutputExtensionsInPackageBuildOutputFolder` (§9), and `IncludeSymbols` is off so
+  no separate symbols package is produced.
+
+### 7c. Push script  [DONE]
 
 Add `PushNugetFiles.ps1` at the repo root, modelled on `src/PushNugetFiles.ps1` in `itextsharp`:
 reads `VersionPrefix` out of `Directory.Build.props`, then
@@ -249,10 +282,16 @@ dotnet nuget push -s "https://tfs-01/DefaultCollection/_packaging/Komsa/nuget/v3
 ```
 
 Must pick up both the `dotnet pack` output of the 8 modules and the `nuget.exe pack` output of
-the bundle — **[VERIFY]** these land in different directories by default; normalise the output
-path so one glob covers all 9.
+the bundle. **[VERIFIED]** they do land in different places by default (`bin\Release\` per
+project vs. the `nuget.exe` working directory), so `PackageOutputPath` is set to
+`$(MSBuildThisFileDirectory)..\artifacts\nuget` in `itext/Directory.Build.props` and the
+bundle is packed with `-OutputDirectory artifacts\nuget`. One glob
+(`artifacts\nuget\Komsa.*.$currentVersion.nupkg`) then covers all 9.
 
-## 8. Work item: origin marker
+The script reads `VersionPrefix` from `itext/Directory.Build.props` (not the repo root — this
+repo has no root `Directory.Build.props`).
+
+## 8. Work item: origin marker  [DONE]
 
 New file `itext/KomsaSharedAssemblyInfo.cs`:
 
@@ -275,7 +314,7 @@ linked into every project via `itext/Directory.Build.targets`:
 The `port-hash` value above is the current content of the repo-root `port-hash` file; consider
 reading it at build time instead of hard-coding, so it can't drift.
 
-## 9. Work item: SourceLink + portable PDBs
+## 9. Work item: SourceLink + portable PDBs  [DONE]
 
 In `itext/Directory.Build.props`:
 
@@ -318,16 +357,19 @@ It does remain the reference implementation this plan was modelled on (§0), and
 Eight commits, each building on its own, ordered so the riskiest step lands against a
 known-green tree.
 
-| # | Commit | Scope |
-|---|---|---|
-| 1 | `build: add KOMSA origin marker and SourceLink` | §8 + §9 |
-| 2 | `build: drop net461, target netstandard2.0 only` | §4 |
-| 3 | `build: centralize versioning and branding metadata` | §6 — central props, strip 8 attributes from 33 `AssemblyInfo.cs`, bump the two `*ProductData` constants |
-| 4 | `build: remove strong naming` | §5 |
-| 5 | `build: publish module packages as Komsa.*` | §7b |
-| 6 | `build: rename bundle package to Komsa.itext` | §7a + §7c |
-| 7 | `feat: use KOMSA producer line` | §3.1–§3.3 |
-| 8 | `test: regenerate cmp reference files` | §3.4 — **only if** the suite requires it; kept separate because it may be a large binary diff |
+| # | Commit | Scope | Status |
+|---|---|---|---|
+| 1 | `build: add KOMSA origin marker and SourceLink` | §8 + §9 | **done** `dfd8d51f6` |
+| 2 | `build: drop net461, target netstandard2.0 only` | §4 | **done** `1fdba11fb` |
+| 3 | `build: centralize versioning and branding metadata` | §6 — central props, strip 8 attributes from 33 `AssemblyInfo.cs`, bump the two `*ProductData` constants | **done** `6183900f2` |
+| 4 | `build: remove strong naming` | §5 | **done** `428749ad0` |
+| 5 | `build: publish module packages as Komsa.*` | §7b | **done** `bf90a691b` |
+| 6 | `build: rename bundle package to Komsa.itext` | §7a + §7c | **done** `475deebb7` |
+| 7 | `feat: use KOMSA producer line` | §3.1–§3.3 | open |
+| 8 | `test: regenerate cmp reference files` | §3.4 — **only if** the suite requires it; kept separate because it may be a large binary diff | open |
+
+`dotnet build iTextCore.sln -c Release` was green after every one of commits 1–6 (and
+`itext.brotli-compressor`, which is not in the solution, was built separately).
 
 All eight land in this repo on `Komsa/develop`; nothing touches the `itextsharp` fork (§11).
 
@@ -338,14 +380,80 @@ instead of two.
 
 ## 13. Verification checklist
 
-- [ ] `dotnet build iTextCore.sln -c Release` clean, no CS0579 duplicate-attribute errors
-- [ ] No `net461` or `netcoreapp2.0` left in any `.csproj` / `.props` / `.nuspec`
+- [x] `dotnet build iTextCore.sln -c Release` clean, no CS0579 duplicate-attribute errors
+      (0 warnings, 0 errors; `itext.brotli-compressor` built separately, see §14.1)
+- [x] No `net461` or `netcoreapp2.0` left in any `.csproj` / `.props` / `.nuspec`
 - [ ] Full test suite green on `net10.0` — record the baseline **before** commit 7 so
-      producer-line fallout is attributable
-- [ ] `Komsa.itext.nupkg` contains 11 `dll` + 11 `xml` (+ `pdb`) under `lib\netstandard2.0`
-      only, and depends on `Komsa.itext.commons`
-- [ ] All 9 package ids correct — especially `Komsa.itext.font-asian`, not `…font_asian`
-- [ ] No `.snk` left in the tree; assemblies confirmed unsigned
+      producer-line fallout is attributable *(not run; belongs to commit 7)*
+- [x] `Komsa.itext.nupkg` contains 11 `dll` + 11 `xml` + 11 `pdb` under `lib\netstandard2.0`
+      only, and depends on `Komsa.itext.commons` 9.8.0.1
+- [x] All 9 package ids correct — `Komsa.itext.font-asian` verified (the assembly inside is
+      still `itext.font_asian.dll`, as before)
+- [x] No `.snk` left in the tree; `itext.kernel.dll` reports `PublicKeyToken=null`
 - [ ] A produced PDF's `/Producer` reads `iText® Core 9.8.0.1 ©2000-2026 KOMSA GmbH` — no
-      `(AGPL version)` suffix
-- [ ] Assembly metadata shows `9.0.0.0` / `9.8.0.1` / `9.8.0.1` and the KOMSA origin URLs
+      `(AGPL version)` suffix *(commit 7)*
+- [x] Assembly metadata shows `9.0.0.0` / `9.8.0.1` / `9.8.0.1`, `KOMSA GmbH`, and the three
+      `Komsa: …` origin `AssemblyMetadata` entries
+
+## 14. Implementation notes and deviations (commits 1–6)
+
+1. **`itext.brotli-compressor` is not in `iTextCore.sln`** (nor is its test project). Building
+   the solution never touches it — build it explicitly. Both projects needed an empty
+   `<TargetFramework></TargetFramework>` next to their own `<TargetFrameworks>`, because §4.1
+   replaced the inherited `TargetFrameworks` with a singular `TargetFramework`, which the SDK
+   treats as "not cross-targeting" and would have silently reduced them to one TFM.
+
+2. **`itext.bouncy-castle-fips-adapter` lost its redundant `<TargetFrameworks>netstandard2.0`
+   override** (§4.6 said "no change"). It now just inherits the single TFM. Behaviourally
+   identical, one less thing that looks like it does something.
+
+3. **§6 was applied to `itext.tests/Directory.Build.props` as well**, not only
+   `itext/Directory.Build.props`. The plan says "put … in `itext/Directory.Build.props`" but also
+   "remove the attributes from all 33 `AssemblyInfo.cs`" — the test assemblies would otherwise
+   have ended up with no version/company attributes at all. There is no repo-root
+   `Directory.Build.props` to share, so the property block is duplicated in the two files.
+
+4. **`IncludeSourceRevisionInInformationalVersion=false`** was added. The .NET SDK otherwise
+   appends `+<commit sha>` to `AssemblyInformationalVersion` once SourceLink is on, which would
+   have contradicted the "`AssemblyInformationalVersion 9.8.0.1`" target in §6.
+
+5. **`PackageId = Komsa.itext` on `itext.io`.** This is the one genuinely surprising thing.
+   A `ProjectReference` to a project with `IsPackable=false` still becomes a package
+   *dependency*, named after that project's `PackageId`. Three module packages reference bundled
+   projects (`brotli-compressor` → `kernel`, `webp-image-support` → `io`, `pdftest` → `io`), so
+   without intervention they would have shipped dependencies on non-existent `itext.kernel` /
+   `itext.io` packages.
+
+   Setting `PackageId=Komsa.itext` on *all 11* bundled projects fixes the id but breaks restore
+   (`error : Ambiguous project name 'Komsa.itext'`); on *two* of them it produces
+   `error NU1108: Cycle detected … Komsa.itext -> Komsa.itext`. Exactly one project may carry the
+   bundle id, and `itext.io` was chosen because it is the bundle's lowest-level assembly.
+   `itext.brotli-compressor` therefore marks its `itext.kernel` reference `PrivateAssets="all"`
+   and adds an `itext.io` reference to carry the `Komsa.itext` dependency. All three module
+   packages now correctly depend on `Komsa.itext` 9.8.0.1.
+
+   The other 10 bundled projects keep their default (never published) package ids.
+
+6. **`build\Komsa.itext.pdftest.props`** — see §7b. Renaming the package id would otherwise have
+   silently disabled the automatic import of the verapdf props file.
+
+7. **Module packages get `PackageLicenseExpression=AGPL-3.0-only`** rather than the deprecated
+   `licenseUrl` the old module nuspecs used. The bundle nuspec keeps `<licenseUrl>` as §7a
+   requires (`nuget.exe pack` warns NU5125 about it).
+
+8. **`PackageProjectUrl` for the modules stayed `https://itextpdf.com/`**, mirroring §7a's
+   decision to keep `<projectUrl>` on the bundle. `RepositoryUrl` points at
+   `https://github.com/komsa/itext-dotnet`.
+
+9. **`LICENSE.md` + `gnu-agpl-v3.0.md` are now in every module package**, where previously only
+   `pdftest`, `font-asian` and `hyph` carried them. Simplification, not a decision.
+
+10. **Produced package set** (`artifacts\nuget`, all at `9.8.0.1`):
+    `Komsa.itext`, `Komsa.itext.commons`, `Komsa.itext.bouncy-castle-adapter`,
+    `Komsa.itext.bouncy-castle-fips-adapter`, `Komsa.itext.brotli-compressor`,
+    `Komsa.itext.pdftest`, `Komsa.itext.webp-image-support`, `Komsa.itext.font-asian`,
+    `Komsa.itext.hyph`. The bundle contains 11 `dll` + 11 `xml` + 11 `pdb` under
+    `lib\netstandard2.0` only.
+
+11. **Not verified because it belongs to commit 7:** the test suite was not run. §13's
+    "record the baseline before commit 7" is still outstanding.
