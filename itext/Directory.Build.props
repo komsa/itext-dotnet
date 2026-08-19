@@ -27,7 +27,7 @@
 
         <!-- NuGet packaging (module packages; the 11 bundled projects opt out) -->
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageProjectUrl>https://itextpdf.com/</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/komsa/itext-dotnet</PackageProjectUrl>
         <RepositoryUrl>https://github.com/komsa/itext-dotnet</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageIcon>ITSC-avatar.png</PackageIcon>

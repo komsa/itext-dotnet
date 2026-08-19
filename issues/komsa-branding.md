@@ -218,12 +218,15 @@ Edit in place:
 - `<dependencies>` → **delete the `net461` group**; in the `netstandard2.0` group rename
   `itext.commons` → `Komsa.itext.commons`
 - `<files>` → **delete the 22 `lib\net461` entries**, keep the 22 `netstandard2.0` ones
-- keep `<icon>ITSC-avatar.png</icon>`, `<licenseUrl>` (AGPL), `<projectUrl>`, and the
+- keep `<icon>ITSC-avatar.png</icon>`, `<licenseUrl>` (AGPL), and the
   `NOTICE_*.txt` / `LICENSE.md` / `gnu-agpl-v3.0.md` entries
-- **[OPEN DECISION]** `<releaseNotes>https://itextpdf.com/itext7release</releaseNotes>` was
-  **kept** (the least-change option, consistent with keeping `<projectUrl>` and
-  `<licenseUrl>`). It points at upstream release notes, which are misleading for a KOMSA
-  build — drop it if that bothers you.
+- **[DECIDED]** the three fields that still carried upstream identity are now KOMSA's:
+  - `<title>` → `KOMSA GmbH` (was `iText Community`)
+  - `<projectUrl>` → `https://github.com/komsa/itext-dotnet` (was `itextpdf.com/products/itext-core`)
+  - `<releaseNotes>` → `https://github.com/komsa/itext-dotnet/releases` (was `itextpdf.com/itext7release`)
+
+  `<description>`, `<summary>` and `<tags>` keep their upstream wording — they describe iText,
+  which is what the package contains.
 
 Pack with the confirmed local tool:
 
@@ -452,9 +455,9 @@ instead of two.
    `licenseUrl` the old module nuspecs used. The bundle nuspec keeps `<licenseUrl>` as §7a
    requires (`nuget.exe pack` warns NU5125 about it).
 
-8. **`PackageProjectUrl` for the modules stayed `https://itextpdf.com/`**, mirroring §7a's
-   decision to keep `<projectUrl>` on the bundle. `RepositoryUrl` points at
-   `https://github.com/komsa/itext-dotnet`.
+8. **`PackageProjectUrl` for the modules is `https://github.com/komsa/itext-dotnet`**, matching
+   the bundle's `<projectUrl>` (§7a). Initially left as `https://itextpdf.com/`, changed when the
+   bundle's upstream-identity fields were decided. `RepositoryUrl` points at the same URL.
 
 9. **`LICENSE.md` + `gnu-agpl-v3.0.md` are now in every module package**, where previously only
    `pdftest`, `font-asian` and `hyph` carried them. Simplification, not a decision.

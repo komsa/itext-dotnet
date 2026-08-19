@@ -3,16 +3,16 @@
   <metadata>
     <id>Komsa.itext</id>
     <version>9.8.0.1</version>
-    <title>iText Community</title>
+    <title>KOMSA GmbH</title>
     <authors>KOMSA GmbH</authors>
     <owners>KOMSA GmbH</owners>
     <licenseUrl>https://www.gnu.org/licenses/agpl.html</licenseUrl>
-    <projectUrl>https://itextpdf.com/products/itext-core</projectUrl>
+    <projectUrl>https://github.com/komsa/itext-dotnet</projectUrl>
 	<icon>ITSC-avatar.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>iText represents the next level of SDKs for developers that want to take advantage of the benefits PDF can bring. Equipped with a better document engine, high- and low-level programming capabilities and the ability to create, edit and enhance PDF documents, iText can be a boon to nearly every workflow. iText allows you to build custom PDF scenarios for web, mobile, desktop or cloud apps in .NET.</description>
     <summary>iText for .NET is a library for PDF generation written entirely in C# for the .NET platform.</summary>
-    <releaseNotes>https://itextpdf.com/itext7release</releaseNotes>
+    <releaseNotes>https://github.com/komsa/itext-dotnet/releases</releaseNotes>
     <copyright>Copyright (c) 1998-2026 KOMSA GmbH</copyright>
     <language>en-US</language>
     <tags>itext itext7 itextsharp c# .net csharp pdf itextcore core fdf xfa acroform forms svg digital-signatures signing security accessibility opensource open source</tags>
