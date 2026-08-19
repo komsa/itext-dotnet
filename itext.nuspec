@@ -25,7 +25,7 @@
 		<dependency id="System.Security.Cryptography.Xml" version="6.0.2" />
         <!-- Explicitly specify transitive dependency to avoid version conflict created by Microsoft.DotNet.PlatformAbstractions. -->
         <dependency id="System.IO.FileSystem.Primitives" version="4.3.0" />
-		<dependency id="Microsoft.DotNet.PlatformAbstractions" version="1.1.0" />
+		<dependency id="Microsoft.DotNet.PlatformAbstractions" version="3.1.6" />
       </group>
     </dependencies>
   </metadata>
