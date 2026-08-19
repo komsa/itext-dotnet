@@ -21,6 +21,11 @@
   the producer-line assertions (DifferentProducerTest, VersionReplaceTest) that must
   keep running.
 
+  SystemUtilTest is likewise filtered per-method. Its two RunProcessAnd* tests read the
+  ImageMagick path straight from the environment variable and hand it to the process
+  starter, so with the variable unset they throw ArgumentNullException on a null
+  executable. The other eight methods are pure string-splitting tests and still run.
+
   KNOWN LIMITATION - this filter cannot fix it:
   CompareTool.CompareByContent falls back to CompareVisuallyAndCombineReports
   (CompareTool.cs:2062) whenever it finds a difference, which invokes Ghostscript and
@@ -30,6 +35,6 @@
 -->
 <RunSettings>
   <RunConfiguration>
-    <TestCaseFilter>FullyQualifiedName!~GhostscriptHelperTest&amp;FullyQualifiedName!~GhostScriptHelperUnitTest&amp;FullyQualifiedName!~ImageMagickHelperTest&amp;FullyQualifiedName!~ImageMagickHelperUnitTest&amp;FullyQualifiedName!~AnnotationsSigningTest&amp;FullyQualifiedName!~Pdf20SigningTest&amp;FullyQualifiedName!~PdfASigningTest&amp;FullyQualifiedName!~PdfMergerTest&amp;FullyQualifiedName!~PolygonSvgNodeRendererTest&amp;FullyQualifiedName!~PolylineSvgNodeRendererTest&amp;FullyQualifiedName!~.RotationTest&amp;FullyQualifiedName!~SignDeferredTest&amp;FullyQualifiedName!~SignatureAppearanceTest&amp;FullyQualifiedName!~SignatureFieldAppearanceTest&amp;FullyQualifiedName!~SignedAppearanceTextTest&amp;FullyQualifiedName!~SimpleSigningTest&amp;FullyQualifiedName!~TaggedPdfSigningTest&amp;FullyQualifiedName!~WebPIntegrationTest&amp;FullyQualifiedName!~CompareToolTest.Gs&amp;FullyQualifiedName!~CompareToolTest.CompareCommand&amp;FullyQualifiedName!~CompareToolTest.CompareVisually</TestCaseFilter>
+    <TestCaseFilter>FullyQualifiedName!~GhostscriptHelperTest&amp;FullyQualifiedName!~GhostScriptHelperUnitTest&amp;FullyQualifiedName!~ImageMagickHelperTest&amp;FullyQualifiedName!~ImageMagickHelperUnitTest&amp;FullyQualifiedName!~AnnotationsSigningTest&amp;FullyQualifiedName!~Pdf20SigningTest&amp;FullyQualifiedName!~PdfASigningTest&amp;FullyQualifiedName!~PdfMergerTest&amp;FullyQualifiedName!~PolygonSvgNodeRendererTest&amp;FullyQualifiedName!~PolylineSvgNodeRendererTest&amp;FullyQualifiedName!~.RotationTest&amp;FullyQualifiedName!~SignDeferredTest&amp;FullyQualifiedName!~SignatureAppearanceTest&amp;FullyQualifiedName!~SignatureFieldAppearanceTest&amp;FullyQualifiedName!~SignedAppearanceTextTest&amp;FullyQualifiedName!~SimpleSigningTest&amp;FullyQualifiedName!~TaggedPdfSigningTest&amp;FullyQualifiedName!~WebPIntegrationTest&amp;FullyQualifiedName!~CompareToolTest.Gs&amp;FullyQualifiedName!~CompareToolTest.CompareCommand&amp;FullyQualifiedName!~CompareToolTest.CompareVisually&amp;FullyQualifiedName!~SystemUtilTest.RunProcessAnd</TestCaseFilter>
   </RunConfiguration>
 </RunSettings>

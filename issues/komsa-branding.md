@@ -491,6 +491,14 @@ Two groups are excluded:
 `CompareToolTest` is filtered **per-method**, not whole-class, because it also holds the
 producer-line assertions (`DifferentProducerTest`, `VersionReplaceTest`) that commit 7 needs.
 
+`SystemUtilTest` is also filtered per-method (`SystemUtilTest.RunProcessAnd`). Its
+`RunProcessAndWaitWithWorkingDirectoryTest` and `RunProcessAndGetProcessInfoTest` read the
+ImageMagick path directly from the environment variable and pass it to the process starter, so
+with the variable unset they throw `ArgumentNullException` on a null executable — a third way of
+depending on the tools, distinct from the two groups above. The other eight methods in the class
+are pure string-splitting tests and keep running. Measured on `itext.commons.tests`: **0 failed /
+419 passed** with the filter.
+
 Measured effect on `itext.io.tests`: unfiltered **34 failed / 989 passed / 1025 total**;
 filtered **0 failed / 965 passed / 967 total**. All 34 failures were Ghostscript/ImageMagick.
 
