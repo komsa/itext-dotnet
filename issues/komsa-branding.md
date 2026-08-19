@@ -103,9 +103,18 @@ Touch points found by inspecting the tree:
    - `itext.tests/itext.kernel.tests/itext/kernel/utils/CompareToolTest.cs:155,163,164`
    - `itext.tests/itext.sign.tests/itext/signatures/sign/PdfPadesSignerTest.cs:280`
 
-4. **[VERIFY]** How many `cmp_*.pdf` reference files carry the producer string in a way that
-   survives the §3.2 normalisation. Run the full suite after §3.1–§3.3 and quantify before
-   deciding whether to regenerate reference files or widen the normalisation.
+4. **[VERIFIED — blast radius is small]** The feared mass `cmp_*.pdf` breakage does not apply.
+   The producer string is only ever compared by `CompareTool.CompareDocumentInfo`, which is
+   called **9 times across 4 files**:
+   - `itext.tests/itext.kernel.tests/itext/kernel/pdf/PdfDocumentInfoTest.cs`
+   - `itext.tests/itext.kernel.tests/itext/kernel/pdf/XMPMetadataTest.cs`
+   - `itext.tests/itext.kernel.tests/itext/kernel/utils/CompareToolTest.cs`
+   - `itext.tests/itext.pdfa.tests/itext/pdfa/PdfAXmpTest.cs`
+
+   `CompareByContent` (2325 call sites) compares pages and the catalog while **explicitly
+   ignoring `/Metadata`**, so neither the info-dictionary producer nor the XMP producer takes
+   part in it. Total exposure for commit 7 is therefore these 4 files plus the 3
+   direct-assertion files in §3.3 — not the whole suite.
 
 5. **[VERIFY]** Dropping `(T 'version')` may affect tests that assert the *format* rather than
    the company — check `UsedProductsPlaceholderPopulator` and `ProducerBuilder` tests under
@@ -384,7 +393,9 @@ instead of two.
       (0 warnings, 0 errors; `itext.brotli-compressor` built separately, see §14.1)
 - [x] No `net461` or `netcoreapp2.0` left in any `.csproj` / `.props` / `.nuspec`
 - [ ] Full test suite green on `net10.0` — record the baseline **before** commit 7 so
-      producer-line fallout is attributable *(not run; belongs to commit 7)*
+      producer-line fallout is attributable *(not run yet; belongs to commit 7)*.
+      Run it with the filter (§15):
+      `dotnet test iTextCore.sln -c Release --settings komsa.runsettings --logger "trx;LogFileName=baseline.trx" --results-directory TestResults`
 - [x] `Komsa.itext.nupkg` contains 11 `dll` + 11 `xml` + 11 `pdb` under `lib\netstandard2.0`
       only, and depends on `Komsa.itext.commons` 9.8.0.1
 - [x] All 9 package ids correct — `Komsa.itext.font-asian` verified (the assembly inside is
@@ -457,3 +468,34 @@ instead of two.
 
 11. **Not verified because it belongs to commit 7:** the test suite was not run. §13's
     "record the baseline before commit 7" is still outstanding.
+
+## 15. Test filtering: Ghostscript / ImageMagick
+
+`BUILDING.md` requires Ghostscript and ImageMagick, wired up through the `ITEXT_GS_EXEC` and
+`ITEXT_MAGICK_COMPARE_EXEC` environment variables, for the visual-comparison tests. **Decision:
+those tools are not installed at KOMSA and the visual comparisons are not relevant for this
+fork**, so the affected tests are filtered out via `komsa.runsettings` at the repo root.
+
+In Visual Studio: *Test > Configure Run Settings > Select Solution Wide runsettings File*.
+
+Two groups are excluded:
+
+1. Tests of the helpers themselves — `GhostscriptHelperTest`, `GhostScriptHelperUnitTest`,
+   `ImageMagickHelperTest`, `ImageMagickHelperUnitTest`.
+2. The 14 classes calling `CompareTool.CompareVisually` (53 call sites): `AnnotationsSigningTest`,
+   `Pdf20SigningTest`, `PdfASigningTest`, `PdfMergerTest`, `PolygonSvgNodeRendererTest`,
+   `PolylineSvgNodeRendererTest`, `RotationTest`, `SignDeferredTest`, `SignatureAppearanceTest`,
+   `SignatureFieldAppearanceTest`, `SignedAppearanceTextTest`, `SimpleSigningTest`,
+   `TaggedPdfSigningTest`, `WebPIntegrationTest`.
+
+`CompareToolTest` is filtered **per-method**, not whole-class, because it also holds the
+producer-line assertions (`DifferentProducerTest`, `VersionReplaceTest`) that commit 7 needs.
+
+Measured effect on `itext.io.tests`: unfiltered **34 failed / 989 passed / 1025 total**;
+filtered **0 failed / 965 passed / 967 total**. All 34 failures were Ghostscript/ImageMagick.
+
+**Known limitation the filter cannot remove.** `CompareTool.CompareByContent` falls back to
+`CompareVisuallyAndCombineReports` (`CompareTool.cs:2062`) whenever it finds a difference, which
+invokes Ghostscript and throws `GS_ENVIRONMENT_VARIABLE_IS_NOT_SPECIFIED`. Passing content
+comparisons are unaffected, but a **failing** one reports a Ghostscript error instead of the
+actual diff. A green run is trustworthy; diagnosing a red one needs Ghostscript installed.
