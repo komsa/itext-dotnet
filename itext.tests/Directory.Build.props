@@ -6,8 +6,25 @@
         <SignAssembly>true</SignAssembly>
         <DelaySign>false</DelaySign>
         <AssemblyOriginatorKeyFile>itext.snk</AssemblyOriginatorKeyFile>
-        <!-- SDK-generated assembly attributes -->
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <!-- SDK-generated assembly attributes; title/description/configuration stay
+             hand-maintained in each project's Properties/AssemblyInfo.cs -->
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+        <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+
+        <!-- Versioning: AssemblyVersion is pinned across 9.x KOMSA revisions -->
+        <VersionPrefix>9.8.0.1</VersionPrefix>
+        <AssemblyVersion>9.0.0.0</AssemblyVersion>
+        <FileVersion>9.8.0.1</FileVersion>
+        <InformationalVersion>9.8.0.1</InformationalVersion>
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+
+        <!-- Branding -->
+        <Company>KOMSA GmbH</Company>
+        <Product>iText</Product>
+        <Authors>KOMSA GmbH</Authors>
+        <Copyright>Copyright (c) 1998-2026 KOMSA GmbH</Copyright>
 
         <!-- Output -->
         <OutputType>library</OutputType>

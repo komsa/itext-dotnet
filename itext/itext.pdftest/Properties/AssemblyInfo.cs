@@ -5,11 +5,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("iText.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Apryse Group NV")]
-[assembly: AssemblyProduct("iText")]
-[assembly: AssemblyCopyright("Copyright (c) 1998-2026 Apryse Group NV")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("itext.pdftest.tests,PublicKey=0024000004800000940000000602000000240000525" + 
                               "3413100040000010001008b21ed5b3fc1c11996390981fe22bbe71a39a9e11d3c2ce" + 
                               "fddd6ee92920fa871f9666ae0fa941af0280d0653df048ae2d93f8c5e2d820dba3c8" + 
@@ -19,7 +14,3 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 [assembly: Guid("f9880dc4-f015-4413-af86-66d0e9512774")]
-
-[assembly: AssemblyVersion("9.8.0.0")]
-[assembly: AssemblyFileVersion("9.8.0.0")]
-[assembly: AssemblyInformationalVersion("9.8.0-SNAPSHOT")]
