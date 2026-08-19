@@ -38,7 +38,7 @@ namespace iText.Commons.Actions.Data {
 //\endcond
 
 //\cond DO_NOT_DOCUMENT
-        internal const String COMMONS_VERSION = "9.8.0.1";
+        internal const String COMMONS_VERSION = KomsaBuildInfo.VERSION;
 //\endcond
 
 //\cond DO_NOT_DOCUMENT

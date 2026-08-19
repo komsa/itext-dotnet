@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Komsa.itext</id>
-    <version>9.8.0.1</version>
+    <version>$version$</version>
     <title>KOMSA GmbH</title>
     <authors>KOMSA GmbH</authors>
     <owners>KOMSA GmbH</owners>
@@ -19,7 +19,7 @@
 	<repository type="git" url="https://github.com/komsa/itext-dotnet" />
     <dependencies>
       <group targetFramework="netstandard2.0">
-        <dependency id="Komsa.itext.commons" version="9.8.0.1" />
+        <dependency id="Komsa.itext.commons" version="$version$" />
         <dependency id="System.Runtime.Loader" version="4.3.0" />
         <dependency id="Microsoft.Extensions.DependencyModel" version="10.0.2" />
 		<dependency id="System.Security.Cryptography.Xml" version="6.0.2" />

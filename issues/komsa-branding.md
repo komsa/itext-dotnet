@@ -424,6 +424,27 @@ differently: 3 breaks the build loudly if an attribute is missed, 4 only where
 `InternalsVisibleTo` matters. Commit 2 lands early so everything after it builds one TFM
 instead of two.
 
+## 12b. Central version [DONE]
+
+`KomsaVersion` in the **repo-root `Directory.Build.props`** is the only literal version in the
+repository. Everything else derives from it:
+
+| Consumer | Mechanism |
+|---|---|
+| Assembly attributes | `VersionPrefix` / `FileVersion` / `InformationalVersion` = `$(KomsaVersion)` |
+| `CommonsProductData.COMMONS_VERSION` | generated `KomsaBuildInfo.g.cs` (`GenerateKomsaBuildInfo` target in `itext/Directory.Build.targets`) |
+| `ITextCoreProductData.CORE_VERSION` | the same constant, read across commons' existing `InternalsVisibleTo` on kernel |
+| `itext.nuspec` | `$version$` token, supplied via `nuget pack -Properties` |
+| `PackNugetFiles.ps1` / `PushNugetFiles.ps1` | read `KomsaVersion` from the root props |
+
+`itext/Directory.Build.props` and `itext.tests/Directory.Build.props` **explicitly import** the
+root file — MSBuild only auto-imports the nearest `Directory.Build.props`, so a nested one
+shadows the root unless it imports upward.
+
+Verified by setting `KomsaVersion` to `9.8.0.99`, rebuilding, and confirming the generated
+constant and the built `itext.kernel.dll` both followed; then reverted and reconfirmed `9.8.0.1`.
+All 9 packages pack at the version taken from that single property.
+
 ## 13. Verification checklist
 
 - [x] `dotnet build iTextCore.sln -c Release` clean, no CS0579 duplicate-attribute errors
