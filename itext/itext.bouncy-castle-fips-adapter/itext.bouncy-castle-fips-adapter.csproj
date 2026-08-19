@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <!-- The .csrpoj file uses ../Directory.Build.props as a source for some configurations -->
   <PropertyGroup>
-    <!-- TargetFrameworks property from ../Directory.Build.props is overriden -->
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>itext.bouncy-castle-fips-adapter</AssemblyName>
   </PropertyGroup>
   <ItemGroup>

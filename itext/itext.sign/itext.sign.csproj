@@ -3,10 +3,6 @@
   <PropertyGroup>
     <AssemblyName>itext.sign</AssemblyName>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="itext.eu-trusted-lists-resources" Version="1.1.0">
       <ExcludeAssets>runtime</ExcludeAssets>

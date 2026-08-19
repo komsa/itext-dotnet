@@ -2,6 +2,7 @@
   <!-- The .csrpoj file uses ../Directory.Build.props as a source for some configurations -->
   <PropertyGroup>
     <!-- TargetFrameworks property from ../Directory.Build.props is overriden -->
+    <TargetFramework></TargetFramework>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <AssemblyName>itext.brotli-compressor.tests</AssemblyName>
   </PropertyGroup>

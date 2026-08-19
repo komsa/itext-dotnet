@@ -3,12 +3,6 @@
   <PropertyGroup>
     <AssemblyName>itext.forms</AssemblyName>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\itext.io\itext.io.csproj" />
     <ProjectReference Include="..\itext.kernel\itext.kernel.csproj" />
