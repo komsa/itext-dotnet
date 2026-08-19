@@ -160,7 +160,10 @@ Libraries target `netstandard2.0` only; tests target `net10.0` only. `netstandar
 consumable from net10, so this is a pure removal — no retarget.
 
 1. `itext/Directory.Build.props:4` — `<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>`
-   → `<TargetFramework>netstandard2.0</TargetFramework>`.
+   → `<TargetFrameworks>netstandard2.0</TargetFrameworks>`. **Keep the property plural.**
+   Switching it to the singular `TargetFramework` silently wins over a project's own plural
+   `TargetFrameworks`, collapsing multi-targeted projects to one TFM; the plural form lets a
+   project override it, which is how upstream intended it. See §14.1.
 2. `itext.tests/Directory.Build.props:4` — `net10.0;netcoreapp2.0;net461` → `net10.0`.
    Then delete the now-dead `net461` and `netcoreapp2.0` `ItemGroup`s (lines ~30–45) and the
    `net8.0` group, keeping only the `net10.0` package references. Line 26's

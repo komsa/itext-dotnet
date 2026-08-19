@@ -1,7 +1,7 @@
 <Project>
     <!-- Build.props file evaluated before .csrpoj file processing -->
     <PropertyGroup Label="Common">
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFrameworks>net10.0</TargetFrameworks>
         <!-- SDK-generated assembly attributes; title/description/configuration stay
              hand-maintained in each project's Properties/AssemblyInfo.cs -->
         <GenerateAssemblyInfo>true</GenerateAssemblyInfo>

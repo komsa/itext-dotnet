@@ -1,7 +1,7 @@
 <Project>
     <!-- Build.props file evaluated before .csrpoj file processing -->
     <PropertyGroup Label="Common">
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFrameworks>netstandard2.0</TargetFrameworks>
         <RootNamespace />
         
 
