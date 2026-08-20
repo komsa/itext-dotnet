@@ -2,14 +2,13 @@
   <!-- The .csrpoj file uses ../Directory.Build.props as a source for some configurations -->
   <PropertyGroup>
     <AssemblyName>itext.commons</AssemblyName>
+    <!-- NuGet package metadata (replaces the former hand-written .nuspec) -->
+    <PackageId>Komsa.itext.commons</PackageId>
+    <Title>iText commons module</Title>
+    <Description>Commons module</Description>
+    <PackageTags>itext itext7 itextsharp c# .net csharp</PackageTags>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-	<Reference Include="System.IO.Compression" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+  <ItemGroup>
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.3.0" />
     <PackageReference Include="System.Text.Json" Version="10.0.2" />
   </ItemGroup>

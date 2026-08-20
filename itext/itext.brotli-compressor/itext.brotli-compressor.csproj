@@ -4,9 +4,17 @@
     <!-- TargetFrameworks property from ../Directory.Build.props is overriden -->
     <TargetFrameworks>netstandard2.1;net8.0</TargetFrameworks>
     <AssemblyName>itext.brotli-compressor</AssemblyName>
+    <!-- NuGet package metadata (replaces the former hand-written .nuspec) -->
+    <PackageId>Komsa.itext.brotli-compressor</PackageId>
+    <Title>iText brotli-compressor module</Title>
+    <Description>brotli-compressor module</Description>
+    <PackageTags>itext itext7 itextsharp c# .net csharp brotli</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\itext.commons\itext.commons.csproj" />
-    <ProjectReference Include="..\itext.kernel\itext.kernel.csproj" />
+    <!-- itext.kernel ships inside Komsa.itext and has no package id of its own, so it
+         must not become a package dependency; itext.io carries the Komsa.itext id. -->
+    <ProjectReference Include="..\itext.kernel\itext.kernel.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\itext.io\itext.io.csproj" />
   </ItemGroup>
 </Project>

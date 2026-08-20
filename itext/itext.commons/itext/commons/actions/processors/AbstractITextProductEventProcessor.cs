@@ -43,7 +43,7 @@ namespace iText.Commons.Actions.Processors {
         public abstract String GetUsageType();
 
         public virtual String GetProducer() {
-            return "iText\u00ae ${usedProducts:P V (T 'version')} \u00a9${copyrightSince}-${copyrightTo} Apryse Group NV";
+            return "iText\u00ae ${usedProducts:P V} \u00a9${copyrightSince}-${copyrightTo} KOMSA GmbH";
         }
 
         public virtual String GetProductName() {

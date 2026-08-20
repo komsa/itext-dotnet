@@ -2,14 +2,9 @@
   <!-- The .csrpoj file uses ../Directory.Build.props as a source for some configurations -->
   <PropertyGroup Label="Configuration">
     <AssemblyName>itext.svg</AssemblyName>
+    <!-- Shipped inside the Komsa.itext bundle package (itext.nuspec), not on its own. -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\itext.io\itext.io.csproj" />
     <ProjectReference Include="..\itext.kernel\itext.kernel.csproj" />

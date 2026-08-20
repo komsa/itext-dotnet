@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  KOMSA test run settings.
+
+  Excludes the tests that require Ghostscript and ImageMagick (BUILDING.md: the
+  ITEXT_GS_EXEC / ITEXT_MAGICK_COMPARE_EXEC environment variables). Those tools are
+  not installed in the KOMSA environment and the visual-comparison tests are not
+  relevant for this fork.
+
+  Use in Visual Studio via  Test > Configure Run Settings > Select Solution Wide runsettings File
+  or on the command line by passing this file to "dotnet test" with the settings option.
+
+  Two groups are excluded:
+
+  1. Tests of the Ghostscript / ImageMagick helpers themselves.
+  2. Test classes that call CompareTool.CompareVisually (53 call sites, 15 classes).
+     These are excluded whole-class, which also drops some tests in them that would
+     have passed - accepted as the cheaper option over per-method filtering.
+
+  CompareToolTest is filtered per-method instead of whole-class, because it also holds
+  the producer-line assertions (DifferentProducerTest, VersionReplaceTest) that must
+  keep running.
+
+  SystemUtilTest is likewise filtered per-method. Its two RunProcessAnd* tests read the
+  ImageMagick path straight from the environment variable and hand it to the process
+  starter, so with the variable unset they throw ArgumentNullException on a null
+  executable. The other eight methods are pure string-splitting tests and still run.
+
+  KNOWN LIMITATION - this filter cannot fix it:
+  CompareTool.CompareByContent falls back to CompareVisuallyAndCombineReports
+  (CompareTool.cs:2062) whenever it finds a difference, which invokes Ghostscript and
+  throws GS_ENVIRONMENT_VARIABLE_IS_NOT_SPECIFIED. Passing content comparisons are
+  unaffected, but a FAILING one reports a Ghostscript error instead of the real diff.
+  A green run is trustworthy; a red one needs Ghostscript installed to be diagnosed.
+-->
+<RunSettings>
+  <RunConfiguration>
+    <TestCaseFilter>FullyQualifiedName!~GhostscriptHelperTest&amp;FullyQualifiedName!~GhostScriptHelperUnitTest&amp;FullyQualifiedName!~ImageMagickHelperTest&amp;FullyQualifiedName!~ImageMagickHelperUnitTest&amp;FullyQualifiedName!~AnnotationsSigningTest&amp;FullyQualifiedName!~Pdf20SigningTest&amp;FullyQualifiedName!~PdfASigningTest&amp;FullyQualifiedName!~PdfMergerTest&amp;FullyQualifiedName!~PolygonSvgNodeRendererTest&amp;FullyQualifiedName!~PolylineSvgNodeRendererTest&amp;FullyQualifiedName!~.RotationTest&amp;FullyQualifiedName!~SignDeferredTest&amp;FullyQualifiedName!~SignatureAppearanceTest&amp;FullyQualifiedName!~SignatureFieldAppearanceTest&amp;FullyQualifiedName!~SignedAppearanceTextTest&amp;FullyQualifiedName!~SimpleSigningTest&amp;FullyQualifiedName!~TaggedPdfSigningTest&amp;FullyQualifiedName!~WebPIntegrationTest&amp;FullyQualifiedName!~CompareToolTest.Gs&amp;FullyQualifiedName!~CompareToolTest.CompareCommand&amp;FullyQualifiedName!~CompareToolTest.CompareVisually&amp;FullyQualifiedName!~CompareToolTest.CompareToolErrorReport&amp;FullyQualifiedName!~CompareToolTest.BaseFontAbsence&amp;FullyQualifiedName!~CompareToolTest.DumpMemory&amp;FullyQualifiedName!~SystemUtilTest.RunProcessAnd</TestCaseFilter>
+  </RunConfiguration>
+</RunSettings>

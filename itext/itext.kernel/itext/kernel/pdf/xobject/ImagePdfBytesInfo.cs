@@ -37,7 +37,7 @@ namespace iText.Kernel.Pdf.Xobject {
     internal class ImagePdfBytesInfo {
         private static readonly String TIFFTAG_SOFTWARE_VALUE = "iText\u00ae " + ITextCoreProductData.GetInstance(
             ).GetVersion() + " \u00a9" + ITextCoreProductData.GetInstance().GetSinceCopyrightYear() + "-" + ITextCoreProductData
-            .GetInstance().GetToCopyrightYear() + " Apryse Group NV";
+            .GetInstance().GetToCopyrightYear() + " KOMSA GmbH";
 
         private readonly int width;
 

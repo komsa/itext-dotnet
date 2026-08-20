@@ -2,8 +2,13 @@
   <!-- The .csrpoj file uses ../Directory.Build.props as a source for some configurations -->
   <PropertyGroup>
     <AssemblyName>itext.pdftest</AssemblyName>
+    <!-- NuGet package metadata (replaces the former hand-written .nuspec) -->
+    <PackageId>Komsa.itext.pdftest</PackageId>
+    <Title>iText pdftest module</Title>
+    <Description>A special module for test purposes</Description>
+    <PackageTags>itext itext7 itextsharp c# .net csharp pdf tests</PackageTags>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+  <ItemGroup>
     <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
     <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
     <!--    
@@ -13,11 +18,6 @@
     -->
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
     <PackageReference Include="NUnit" Version="3.7.1" />
@@ -26,12 +26,17 @@
     <ProjectReference Include="..\itext.io\itext.io.csproj" />
   </ItemGroup>
   <ItemGroup>
-	<Content Include="lib\verapdf\VeraPDF_license.txt">
+	<Content Include="lib\verapdf\VeraPDF_license.txt" Pack="true" PackagePath="build\lib\verapdf\VeraPDF_license.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
-    <None Update="lib\verapdf\VeraPdfValidatorApp.jar">
+    <None Update="lib\verapdf\VeraPdfValidatorApp.jar" Pack="true" PackagePath="build\lib\verapdf\VeraPdfValidatorApp.jar">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Payload the old itext-pdftest.nuspec put under Build\. The props file has to be
+         named after the package id for NuGet to import it automatically. -->
+    <None Include="itext.pdftest.props" Pack="true" PackagePath="build\Komsa.itext.pdftest.props" />
   </ItemGroup>
 </Project>

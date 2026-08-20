@@ -1,16 +1,34 @@
 <Project>
+    <!-- Repo-root Directory.Build.props is not auto-imported once this file exists -->
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
     <!-- Build.props file evaluated before .csrpoj file processing -->
     <PropertyGroup Label="Common">
-        <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0</TargetFrameworks>
         <RootNamespace />
         
-        <!-- Signing -->
-        <SignAssembly>true</SignAssembly>
-        <DelaySign>false</DelaySign>
-        <AssemblyOriginatorKeyFile>itext.snk</AssemblyOriginatorKeyFile>
 
-        <!-- SDK-generated assembly attributes -->
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <!-- SDK-generated assembly attributes; title/description/configuration stay
+             hand-maintained in each project's Properties/AssemblyInfo.cs -->
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+        <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+
+        <!-- Version and branding come from the repo-root Directory.Build.props -->
+
+        <!-- NuGet packaging (module packages; the 11 bundled projects opt out) -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageProjectUrl>https://github.com/komsa/itext-dotnet</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/komsa/itext-dotnet</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageIcon>ITSC-avatar.png</PackageIcon>
+        <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageOutputPath>$(MSBuildThisFileDirectory)..\artifacts\nuget</PackageOutputPath>
+        <IncludeSymbols>false</IncludeSymbols>
+        <!-- ship the portable PDB next to the DLL instead of a separate symbols package -->
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
         <!-- Output -->
         <OutputType>library</OutputType>
@@ -18,8 +36,22 @@
         <!-- Compiler -->
         <WarningLevel>0</WarningLevel>
 
+        <!-- Debug symbols / SourceLink -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <DebugType>portable</DebugType>
+
         <!-- Warnings -->
         <NoWarn>1701;1702;1591;1570;1572;1573;1574;1580;1584;1658</NoWarn>
         
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(IsPackable)' != 'false' ">
+        <None Include="$(MSBuildThisFileDirectory)..\ITSC-avatar.png" Pack="true" PackagePath="" Visible="false" />
+        <None Include="$(MSBuildThisFileDirectory)..\gnu-agpl-v3.0.md" Pack="true" PackagePath="" Visible="false" />
+        <None Include="$(MSBuildThisFileDirectory)..\LICENSE.md" Pack="true" PackagePath="" Visible="false" />
+    </ItemGroup>
 </Project>

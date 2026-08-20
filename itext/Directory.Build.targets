@@ -5,4 +5,35 @@
         <DocumentationFile>$(TargetDir)\$(AssemblyName).xml</DocumentationFile>
 
     </PropertyGroup>
+
+    <!-- KOMSA origin marker, linked into every assembly built from this folder -->
+    <ItemGroup>
+        <Compile Include="$(MSBuildThisFileDirectory)KomsaSharedAssemblyInfo.cs" Link="Properties\KomsaSharedAssemblyInfo.cs" />
+    </ItemGroup>
+
+    <!--
+      KomsaVersion (repo-root Directory.Build.props) is the only place the version is written.
+      CommonsProductData.COMMONS_VERSION and ITextCoreProductData.CORE_VERSION need it as a
+      compile-time constant, so it is generated into itext.commons here. itext.kernel reads it
+      through the InternalsVisibleTo it already has on itext.commons.
+    -->
+    <Target Name="GenerateKomsaBuildInfo" BeforeTargets="BeforeCompile"
+            Condition="'$(MSBuildProjectName)' == 'itext.commons'">
+        <PropertyGroup>
+            <KomsaBuildInfoFile>$(IntermediateOutputPath)KomsaBuildInfo.g.cs</KomsaBuildInfoFile>
+        </PropertyGroup>
+        <ItemGroup>
+            <KomsaBuildInfoLine Include="// &lt;auto-generated /&gt; Generated from KomsaVersion in Directory.Build.props." />
+            <KomsaBuildInfoLine Include="namespace iText.Commons {" />
+            <KomsaBuildInfoLine Include="    internal static class KomsaBuildInfo {" />
+            <KomsaBuildInfoLine Include="        internal const string VERSION = &quot;$(KomsaVersion)&quot;%3B" />
+            <KomsaBuildInfoLine Include="    }" />
+            <KomsaBuildInfoLine Include="}" />
+        </ItemGroup>
+        <WriteLinesToFile File="$(KomsaBuildInfoFile)" Lines="@(KomsaBuildInfoLine)" Overwrite="true"
+                          WriteOnlyWhenDifferent="true" />
+        <ItemGroup>
+            <Compile Include="$(KomsaBuildInfoFile)" />
+        </ItemGroup>
+    </Target>
 </Project>

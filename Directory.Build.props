@@ -1,0 +1,35 @@
+<Project>
+    <!--
+      Single source of truth for the KOMSA build.
+
+      itext/Directory.Build.props and itext.tests/Directory.Build.props import this file
+      explicitly - MSBuild only auto-imports the *nearest* Directory.Build.props, so a nested
+      one shadows this unless it imports upwards.
+
+      The version is consumed in four more places, all derived from KomsaVersion:
+        - assembly attributes, via VersionPrefix / FileVersion / InformationalVersion below
+        - CommonsProductData.COMMONS_VERSION and ITextCoreProductData.CORE_VERSION, via the
+          generated KomsaBuildInfo.g.cs (see itext/Directory.Build.targets)
+        - itext.nuspec, via the $version$ token supplied by PackNugetFiles.ps1
+        - PushNugetFiles.ps1, which reads KomsaVersion out of this file
+    -->
+    <PropertyGroup Label="KOMSA version">
+        <KomsaVersion>9.8.0.2</KomsaVersion>
+
+        <VersionPrefix>$(KomsaVersion)</VersionPrefix>
+        <FileVersion>$(KomsaVersion)</FileVersion>
+        <InformationalVersion>$(KomsaVersion)</InformationalVersion>
+        <!-- SourceLink would otherwise append +<commit sha> to InformationalVersion -->
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+
+        <!-- Pinned: the binding identity stays stable across 9.x KOMSA revisions -->
+        <AssemblyVersion>9.0.0.0</AssemblyVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Label="KOMSA branding">
+        <Company>KOMSA GmbH</Company>
+        <Product>iText</Product>
+        <Authors>KOMSA GmbH</Authors>
+        <Copyright>Copyright (c) 1998-2026 KOMSA GmbH</Copyright>
+    </PropertyGroup>
+</Project>
