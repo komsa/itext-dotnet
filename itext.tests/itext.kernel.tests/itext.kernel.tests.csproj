@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\itext\itext.kernel\itext.kernel.csproj" />
+    <ProjectReference Include="..\..\itext\itext.bouncy-castle-fips-adapter\itext.bouncy-castle-fips-adapter.csproj" />
     <ProjectReference Include="..\..\itext\itext.pdftest\itext.pdftest.csproj" />
     <ProjectReference Include="..\..\itext\itext.font-asian\itext.font-asian.csproj" />
   </ItemGroup>

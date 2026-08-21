@@ -11,6 +11,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\itext.bouncy-castle-adapter\itext.bouncy-castle-adapter.csproj" />
-	<ProjectReference Include="..\itext.bouncy-castle-fips-adapter\itext.bouncy-castle-fips-adapter.csproj" />
   </ItemGroup>
 </Project>

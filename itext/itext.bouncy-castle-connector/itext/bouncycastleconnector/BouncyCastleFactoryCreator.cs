@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.IO;
 using iText.Bouncycastle;
 using iText.Bouncycastleconnector.Logs;
-using iText.Bouncycastlefips;
 using iText.Commons.Bouncycastle;
 using iText.Commons.Internal.Runtime;
 using iText.Commons.Logs;
@@ -122,7 +121,6 @@ namespace iText.Bouncycastleconnector {
 
         private static void PopulateFactoriesMap() {
             FACTORIES.Put("bouncy-castle", () => new BouncyCastleFactory());
-            FACTORIES.Put("bouncy-castle-fips", () => new BouncyCastleFipsFactory());
         }
         // Android-Conversion-Skip-Line (BC FIPS isn't supported on Android)
     }
