@@ -44,11 +44,28 @@ deliberately — do not reintroduce it.
 
 ## Test
 
+> **Never start a solution-wide test run on this machine, and never start one without asking
+> first.** `dotnet test iTextCore.sln` runs all 13 assemblies in parallel; on 2026-08-25 it
+> consumed all 64 GB of RAM and took the machine down. This is not a flaky-test annoyance, it
+> costs the user their whole session.
+>
+> Use the wrapper, which pins the run to idle priority and enforces a hard memory cap through a
+> Windows job object:
+>
+> ```
+> python scripts/run_tests.py itext.tests/itext.commons.tests/itext.commons.tests.csproj
+> python scripts/run_tests.py <project> --filter "FullyQualifiedName~<TheClass>"
+> ```
+>
+> It refuses a `.sln` target unless `--allow-solution` is passed, reports the peak memory of the
+> run, and reaps orphaned `testhost` processes when it exits. See the module docstring for the
+> details. If a broader run really is needed, ask, then run the projects **one at a time**.
+
 Ghostscript and ImageMagick are **not installed** here, and the visual-comparison tests are not
-relevant to this fork. Always run with the filter:
+relevant to this fork. Always pass the runsettings:
 
 ```
-dotnet test iTextCore.sln -c Release --settings komsa.runsettings
+--settings komsa.runsettings
 ```
 
 In Visual Studio: *Test > Configure Run Settings > Select Solution Wide runsettings File*.
@@ -58,11 +75,11 @@ that have nothing to do with your change.
 
 Two things that will bite you:
 
-- **Run assemblies sequentially when a green result matters.** A solution-wide `dotnet test`
-  runs all 13 assemblies in parallel and can exhaust memory on this machine, producing
-  `OutOfMemoryException` in BouncyCastle static init, `Insufficient system resources` from
-  veraPDF, and network timeouts. These look alarming and are not regressions — re-run the
-  affected project on its own before believing a failure.
+- **Run assemblies sequentially, one project per invocation.** Beyond the memory blow-up above, a
+  parallel solution-wide run also produces `OutOfMemoryException` in BouncyCastle static init,
+  `Insufficient system resources` from veraPDF, and network timeouts. Those particular failures
+  are artefacts of the parallelism, not regressions — re-run the affected project on its own
+  before believing a failure.
 - **`itext.brotli-compressor` and its test project are not in `iTextCore.sln`.** A solution-wide
   build or test run never covers them. Build them explicitly.
 
