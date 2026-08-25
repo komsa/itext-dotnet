@@ -14,7 +14,7 @@
         - PushNugetFiles.ps1, which reads KomsaVersion out of this file
     -->
     <PropertyGroup Label="KOMSA version">
-        <KomsaVersion>9.8.0.4</KomsaVersion>
+        <KomsaVersion>9.8.0.5</KomsaVersion>
 
         <VersionPrefix>$(KomsaVersion)</VersionPrefix>
         <FileVersion>$(KomsaVersion)</FileVersion>
