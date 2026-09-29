@@ -10,5 +10,5 @@ $currentVersion = $propsXml.SelectSingleNode("Project/PropertyGroup/KomsaVersion
 # bundle package (nuget.exe pack itext.nuspec) are written to this directory.
 $outputDirectory = "$PSScriptRoot\artifacts\nuget"
 
-&dotnet nuget push -s "https://tfs-01/DefaultCollection/_packaging/Komsa/nuget/v3/index.json" -k AzureDevOps "$outputDirectory\Komsa.*.$currentVersion.nupkg"
+&dotnet nuget push -s "https://tfs-01.intern.komsa.de/DefaultCollection/_packaging/Komsa/nuget/v3/index.json" -k AzureDevOps "$outputDirectory\Komsa.*.$currentVersion.nupkg"
 pause
